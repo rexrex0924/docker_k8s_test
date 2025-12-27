@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: my-fastapi-app.local # The "Fake" domain name we will use
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web-service # Send traffic to our existing service
+            port:
+              number: 8080 # The port defined in web-service.yaml

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+  labels:
+    app: fastapi-web
+spec:
+  replicas: {{ .Values.replicaCount }} # This is the automation! It will always keep 2 copies running.
+  selector:
+    matchLabels:
+      app: fastapi-web
+  template:
+    metadata:
+      labels:
+        app: fastapi-web
+    spec:
+      containers:
+      - name: fastapi-container
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }} # Your pushed image
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "100m" # 1/10th of a core
+            memory: "128Mi"
+          limits:
+            cpu: "500m" # Half a core max
+            memory: "256Mi"
+        env:
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: postgres-user
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: postgres-password
+        - name: DATABASE_URL
+          value: "postgres://$(DB_USER):$(DB_PASS)@db-service:5432/db"
