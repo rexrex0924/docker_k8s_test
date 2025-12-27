@@ -39,7 +39,7 @@ def read_root():
         return {"status": "error", "detail": str(exc)}
 
     return {
-        "status": "Cloud Environment Ready",
+        "status": "Cloud Environment Ready (Handled by CI/CD)",
         "recent_visits": [timestamp.isoformat() for timestamp in recent_visits],
         "database_url": os.getenv("DATABASE_URL"),
     }
